@@ -32,7 +32,7 @@ export class GoogleDriveService {
     }
   }
 
-  async getFile(fileId: string) {
+  async getFileById(fileId: string) {
     try {
       const response = await this.drive.files.get({
         fileId,
