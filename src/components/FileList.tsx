@@ -1,12 +1,28 @@
 import React from 'react';
-import { drive_v3 } from 'googleapis';
+
+interface DriveFile {
+  id: string;
+  name: string;
+  mimeType: string;
+  size?: string;
+  modifiedTime?: string;
+  webContentLink?: string;
+}
 
 interface FileListProps {
-  files: drive_v3.Schema$File[];
-  onFileClick: (file: drive_v3.Schema$File) => void;
+  files: DriveFile[];
+  onFileClick: (file: DriveFile) => void;
 }
 
 export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
+  if (!Array.isArray(files) || files.length === 0) {
+    return (
+      <div className="text-center text-gray-500 dark:text-gray-400">
+        Nenhum arquivo encontrado
+      </div>
+    );
+  }
+
   return (
     <div className="grid gap-4 p-4">
       {files.map((file) => (

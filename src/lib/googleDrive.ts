@@ -1,17 +1,20 @@
 import { google } from 'googleapis';
-import { JWT } from 'google-auth-library';
+import { GoogleAuth } from 'google-auth-library';
 
 export class GoogleDriveService {
   private drive;
 
   constructor() {
-    const credentials = JSON.parse(
-      Buffer.from(process.env.GD_SERVICE_B64 || '', 'base64').toString()
-    );
+    const credentials = process.env.GOOGLE_DRIVE_CREDENTIALS
+      ? JSON.parse(Buffer.from(process.env.GOOGLE_DRIVE_CREDENTIALS, 'base64').toString('utf-8'))
+      : null;
 
-    const auth = new JWT({
-      email: credentials.client_email,
-      key: credentials.private_key,
+    if (!credentials) {
+      throw new Error('Missing GOOGLE_DRIVE_CREDENTIALS environment variable');
+    }
+
+    const auth = new GoogleAuth({
+      credentials,
       scopes: ['https://www.googleapis.com/auth/drive.readonly'],
     });
 
@@ -19,30 +22,23 @@ export class GoogleDriveService {
   }
 
   async listFiles(folderId?: string) {
-    try {
-      const response = await this.drive.files.list({
-        q: folderId ? `'${folderId}' in parents` : 'root in parents',
-        fields: 'files(id, name, mimeType, size, modifiedTime)',
-      });
+    const response = await this.drive.files.list({
+      q: folderId
+        ? `'${folderId}' in parents and trashed = false`
+        : 'trashed = false',
+      fields: 'files(id, name, mimeType, size, modifiedTime, webContentLink)',
+      orderBy: 'folder,name',
+    });
 
-      return response.data.files || [];
-    } catch (error) {
-      console.error('Error listing files:', error);
-      throw error;
-    }
+    return response.data.files || [];
   }
 
   async getFileById(fileId: string) {
-    try {
-      const response = await this.drive.files.get({
-        fileId,
-        fields: 'id, name, mimeType, size, modifiedTime, webContentLink',
-      });
+    const response = await this.drive.files.get({
+      fileId,
+      fields: 'id, name, mimeType, size, modifiedTime, webContentLink',
+    });
 
-      return response.data;
-    } catch (error) {
-      console.error('Error getting file:', error);
-      throw error;
-    }
+    return response.data;
   }
 } 

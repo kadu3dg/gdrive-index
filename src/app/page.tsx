@@ -1,23 +1,45 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { drive_v3 } from 'googleapis';
 import { FileList } from '@/components/FileList';
-import { GoogleDriveService } from '@/lib/googleDrive';
+
+interface DriveFile {
+  id: string;
+  name: string;
+  mimeType: string;
+  size?: string;
+  modifiedTime?: string;
+  webContentLink?: string;
+}
 
 export default function Home() {
-  const [files, setFiles] = useState<drive_v3.Schema$File[]>([]);
+  const [files, setFiles] = useState<DriveFile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [currentFolder, setCurrentFolder] = useState<string | undefined>();
 
   useEffect(() => {
     const loadFiles = async () => {
       try {
-        const driveService = new GoogleDriveService();
-        const fileList = await driveService.listFiles(currentFolder);
+        setLoading(true);
+        setError(null);
+        const url = currentFolder
+          ? `/api/files?folderId=${currentFolder}`
+          : '/api/files';
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        
+        // Garantir que data é um array
+        const fileList = Array.isArray(data) ? data : [];
         setFiles(fileList);
       } catch (error) {
         console.error('Error loading files:', error);
+        setError(error instanceof Error ? error.message : 'Erro ao carregar arquivos');
+        setFiles([]);
       } finally {
         setLoading(false);
       }
@@ -26,13 +48,18 @@ export default function Home() {
     loadFiles();
   }, [currentFolder]);
 
-  const handleFileClick = async (file: drive_v3.Schema$File) => {
+  const handleFileClick = async (file: DriveFile) => {
     if (file.mimeType === 'application/vnd.google-apps.folder' && file.id) {
       setCurrentFolder(file.id);
     } else {
       try {
-        const driveService = new GoogleDriveService();
-        const fileDetails = await driveService.getFileById(file.id!);
+        const response = await fetch(`/api/files/${file.id}`);
+        const fileDetails = await response.json();
+        
+        if (fileDetails.error) {
+          throw new Error(fileDetails.error);
+        }
+        
         if (fileDetails.webContentLink) {
           window.open(fileDetails.webContentLink, '_blank');
         }
@@ -50,6 +77,10 @@ export default function Home() {
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white"></div>
+        </div>
+      ) : error ? (
+        <div className="text-center text-red-600 dark:text-red-400">
+          {error}
         </div>
       ) : (
         <>
