@@ -9,11 +9,13 @@ interface DriveFile {
   modifiedTime?: string;
   webContentLink?: string;
   thumbnailLink?: string;
+  embedLink?: string;
 }
 
 interface FileListProps {
   files: DriveFile[];
   onFileClick: (file: DriveFile) => void;
+  rootFolderId?: string;
 }
 
 const getFileIcon = (mimeType: string) => {
@@ -50,7 +52,52 @@ const formatFileSize = (bytes?: string) => {
   return `${(size / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 };
 
-export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
+const FilePreview: React.FC<{ file: DriveFile }> = ({ file }) => {
+  if (file.mimeType.startsWith('image/')) {
+    return (
+      <Image
+        src={file.thumbnailLink || getFileIcon(file.mimeType)}
+        alt={file.name}
+        fill
+        className="object-contain"
+      />
+    );
+  }
+
+  if (file.mimeType.startsWith('video/') && file.embedLink) {
+    return (
+      <iframe
+        src={file.embedLink}
+        className="w-full h-full"
+        allowFullScreen
+      />
+    );
+  }
+
+  if (file.mimeType.includes('document') || file.mimeType.includes('spreadsheet') || file.mimeType.includes('presentation')) {
+    return (
+      <iframe
+        src={`https://drive.google.com/file/d/${file.id}/preview`}
+        className="w-full h-full"
+        allowFullScreen
+      />
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-center h-full">
+      <Image
+        src={getFileIcon(file.mimeType)}
+        alt={file.mimeType}
+        width={64}
+        height={64}
+        className="opacity-50"
+      />
+    </div>
+  );
+};
+
+export const FileList: React.FC<FileListProps> = ({ files, onFileClick, rootFolderId }) => {
   if (!Array.isArray(files) || files.length === 0) {
     return (
       <div className="text-center text-gray-500 dark:text-gray-400">
@@ -59,8 +106,14 @@ export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
     );
   }
 
-  const folders = files.filter(file => file.mimeType === 'application/vnd.google-apps.folder');
-  const otherFiles = files.filter(file => file.mimeType !== 'application/vnd.google-apps.folder');
+  // Filtra as pastas, excluindo a pasta raiz
+  const folders = files
+    .filter(file => file.mimeType === 'application/vnd.google-apps.folder' && file.id !== rootFolderId);
+
+  // Filtra os arquivos que estão na pasta atual
+  const otherFiles = files
+    .filter(file => file.mimeType !== 'application/vnd.google-apps.folder');
+
   const sortedFiles = [...folders, ...otherFiles];
 
   return (
@@ -74,24 +127,7 @@ export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
             className="relative h-40 bg-gray-100 dark:bg-gray-700 cursor-pointer"
             onClick={() => onFileClick(file)}
           >
-            {file.thumbnailLink ? (
-              <Image
-                src={file.thumbnailLink}
-                alt={file.name}
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <div className="flex items-center justify-center h-full">
-                <Image
-                  src={getFileIcon(file.mimeType)}
-                  alt={file.mimeType}
-                  width={64}
-                  height={64}
-                  className="opacity-50"
-                />
-              </div>
-            )}
+            <FilePreview file={file} />
           </div>
           
           <div className="p-4">

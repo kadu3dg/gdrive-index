@@ -26,7 +26,7 @@ export class GoogleDriveService {
       q: folderId
         ? `'${folderId}' in parents and trashed = false`
         : 'trashed = false',
-      fields: 'files(id, name, mimeType, size, modifiedTime, webContentLink, thumbnailLink)',
+      fields: 'files(id, name, mimeType, size, modifiedTime, webContentLink, thumbnailLink, embedLink)',
       orderBy: 'folder,name',
       pageSize: 1000,
     });
@@ -37,7 +37,7 @@ export class GoogleDriveService {
   async getFileById(fileId: string) {
     const response = await this.drive.files.get({
       fileId,
-      fields: 'id, name, mimeType, size, modifiedTime, webContentLink, thumbnailLink',
+      fields: 'id, name, mimeType, size, modifiedTime, webContentLink, thumbnailLink, embedLink',
     });
 
     return response.data;
