@@ -5,7 +5,8 @@ Um índice de arquivos do Google Drive construído com Next.js para facilitar o 
 ## Funcionalidades
 
 - Listagem de arquivos e pastas do Google Drive
-- Navegação entre pastas
+- Navegação entre pastas com breadcrumb
+- Preview de imagens e ícones para diferentes tipos de arquivos
 - Download direto de arquivos
 - Interface moderna e responsiva
 - Suporte a tema claro/escuro
@@ -23,29 +24,26 @@ cd gdrive-index
 npm install
 ```
 
-3. Configure as variáveis de ambiente:
-- Crie um arquivo `.env` na raiz do projeto
-- Adicione as seguintes variáveis:
-```env
-# Base64 Encoded Service Account JSON
-GD_SERVICE_B64=seu_service_account_json_em_base64
+3. Configure as credenciais do Google Drive:
+   - Vá para o [Google Cloud Console](https://console.cloud.google.com)
+   - Crie um novo projeto ou selecione um existente
+   - Ative a API do Google Drive
+   - Crie uma conta de serviço e baixe o arquivo JSON de credenciais
+   - Converta o arquivo JSON para Base64
 
-# Secret Key for Encryption
-ENCRYPTION_KEY=sua_chave_de_criptografia
+4. Configure as variáveis de ambiente:
+   - Crie um arquivo `.env.local` na raiz do projeto
+   - Adicione as seguintes variáveis:
+   ```env
+   GOOGLE_DRIVE_CREDENTIALS=seu_json_em_base64
+   ```
 
-# Index password, used when private mode is enabled
-SITE_PASSWORD=senha_opcional
-
-# [Optional] Only domain, without protocol (ex: mbaharip.com)
-NEXT_PUBLIC_DOMAIN=seu_dominio_opcional
-```
-
-4. Execute o projeto em desenvolvimento:
+5. Execute o projeto em desenvolvimento:
 ```bash
 npm run dev
 ```
 
-5. Para produção:
+6. Para produção:
 ```bash
 npm run build
 npm start
@@ -55,7 +53,7 @@ npm start
 
 1. Fork este repositório
 2. Conecte ao Vercel
-3. Configure as variáveis de ambiente no Vercel
+3. Configure a variável de ambiente `GOOGLE_DRIVE_CREDENTIALS` no Vercel
 4. Deploy!
 
 ## Licença
