@@ -80,12 +80,3 @@ O projeto está configurado para deploy automático no Vercel:
 ## 📝 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## 👤 Autor
-
-- [@kadu3dg](https://github.com/kadu3dg)
-- Instagram: [@kadu3dg](https://instagram.com/kadu3dg)
-
-## 🤝 Contribuindo
-
-Contribuições são sempre bem-vindas! Sinta-se à vontade para abrir uma issue ou enviar um pull request. 
