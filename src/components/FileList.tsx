@@ -50,6 +50,47 @@ const formatFileSize = (bytes?: string) => {
   return `${(size / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 };
 
+const FilePreview: React.FC<{ file: DriveFile }> = ({ file }) => {
+  if (file.mimeType.startsWith('video/') && file.webContentLink) {
+    return (
+      <div className="relative h-40 bg-black">
+        <video
+          className="absolute inset-0 w-full h-full object-contain"
+          src={file.webContentLink}
+          controls
+          preload="metadata"
+          poster={file.thumbnailLink}
+        >
+          Seu navegador não suporta a tag de vídeo.
+        </video>
+      </div>
+    );
+  }
+
+  if (file.thumbnailLink) {
+    return (
+      <Image
+        src={file.thumbnailLink}
+        alt={file.name}
+        fill
+        className="object-cover"
+      />
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-center h-full">
+      <Image
+        src={getFileIcon(file.mimeType)}
+        alt={file.mimeType}
+        width={64}
+        height={64}
+        className="opacity-50"
+      />
+    </div>
+  );
+};
+
 export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
   if (!Array.isArray(files) || files.length === 0) {
     return (
@@ -74,24 +115,7 @@ export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
             className="relative h-40 bg-gray-100 dark:bg-gray-700 cursor-pointer"
             onClick={() => onFileClick(file)}
           >
-            {file.thumbnailLink ? (
-              <Image
-                src={file.thumbnailLink}
-                alt={file.name}
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <div className="flex items-center justify-center h-full">
-                <Image
-                  src={getFileIcon(file.mimeType)}
-                  alt={file.mimeType}
-                  width={64}
-                  height={64}
-                  className="opacity-50"
-                />
-              </div>
-            )}
+            <FilePreview file={file} />
           </div>
           
           <div className="p-4">
