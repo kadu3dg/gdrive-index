@@ -62,8 +62,27 @@ export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
     );
   }
 
-  const folders = files.filter(file => file.mimeType === 'application/vnd.google-apps.folder');
-  const otherFiles = files.filter(file => file.mimeType !== 'application/vnd.google-apps.folder');
+  const folders = files.filter(file => file.mimeType === 'application/vnd.google-apps.folder')
+    .sort((a, b) => {
+      // Extrair o número da temporada (se existir)
+      const getSeasonNumber = (name: string) => {
+        const match = name.match(/(\d+)ª? Temporada/);
+        return match ? parseInt(match[1]) : 0;
+      };
+      
+      const seasonA = getSeasonNumber(a.name);
+      const seasonB = getSeasonNumber(b.name);
+      
+      // Se ambos têm números de temporada, ordenar por número
+      if (seasonA && seasonB) {
+        return seasonA - seasonB;
+      }
+      
+      // Caso contrário, ordenar alfabeticamente
+      return a.name.localeCompare(b.name);
+    });
+  const otherFiles = files.filter(file => file.mimeType !== 'application/vnd.google-apps.folder')
+    .sort((a, b) => a.name.localeCompare(b.name));
   const sortedFiles = [...folders, ...otherFiles];
 
   const ViewToggle = () => (

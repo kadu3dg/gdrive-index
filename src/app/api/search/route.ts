@@ -32,68 +32,82 @@ export async function GET(request: Request) {
     if (!process.env.GOOGLE_DRIVE_CREDENTIALS) {
       console.error('GOOGLE_DRIVE_CREDENTIALS is not set');
       return NextResponse.json(
-        { error: 'Server configuration error' },
+        { error: 'Credenciais do Google Drive não configuradas' },
         { status: 500 }
       );
     }
 
     const drive = getGoogleDriveClient();
     
-    const response = await drive.files.list({
-      q: `name contains '${query}' and trashed = false`,
-      fields: 'files(id, name, mimeType, modifiedTime, size, webContentLink)',
-      orderBy: 'modifiedTime desc',
-      pageSize: 30,
-      supportsAllDrives: true,
-      includeItemsFromAllDrives: true
-    });
+    try {
+      const response = await drive.files.list({
+        q: `name contains '${query}' and trashed = false`,
+        fields: 'files(id, name, mimeType, modifiedTime, size, webContentLink)',
+        orderBy: 'modifiedTime desc',
+        pageSize: 30,
+        supportsAllDrives: true,
+        includeItemsFromAllDrives: true
+      });
 
-    const files = response.data.files || [];
-    
-    // Processa os arquivos para garantir que todos tenham os links necessários
-    const processedFiles = await Promise.all(
-      files.map(async (file) => {
-        // Se for uma pasta, não precisa de webContentLink
-        if (file.mimeType === 'application/vnd.google-apps.folder') {
-          return {
-            ...file,
-            webContentLink: null
-          };
-        }
+      const files = response.data.files || [];
+      
+      // Processa os arquivos para garantir que todos tenham os links necessários
+      const processedFiles = await Promise.all(
+        files.map(async (file) => {
+          // Se for uma pasta, não precisa de webContentLink
+          if (file.mimeType === 'application/vnd.google-apps.folder') {
+            return {
+              ...file,
+              webContentLink: null
+            };
+          }
 
-        // Se já tem webContentLink, retorna como está
-        if (file.webContentLink) {
-          return file;
-        }
+          // Se já tem webContentLink, retorna como está
+          if (file.webContentLink) {
+            return file;
+          }
 
-        try {
-          // Tenta obter o link de download
-          const fileData = await drive.files.get({
-            fileId: file.id!,
-            fields: 'webContentLink',
-            supportsAllDrives: true
-          });
+          try {
+            // Tenta obter o link de download
+            const fileData = await drive.files.get({
+              fileId: file.id!,
+              fields: 'webContentLink',
+              supportsAllDrives: true
+            });
 
-          return {
-            ...file,
-            webContentLink: fileData.data.webContentLink || `https://drive.google.com/uc?id=${file.id}&export=download`
-          };
-        } catch (error) {
-          console.error(`Error getting link for file ${file.id}:`, error);
-          // Retorna um link alternativo se não conseguir obter o webContentLink
-          return {
-            ...file,
-            webContentLink: `https://drive.google.com/uc?id=${file.id}&export=download`
-          };
-        }
-      })
-    );
+            return {
+              ...file,
+              webContentLink: fileData.data.webContentLink || `https://drive.google.com/uc?id=${file.id}&export=download`
+            };
+          } catch (error) {
+            console.error(`Error getting link for file ${file.id}:`, error);
+            // Retorna um link alternativo se não conseguir obter o webContentLink
+            return {
+              ...file,
+              webContentLink: `https://drive.google.com/uc?id=${file.id}&export=download`
+            };
+          }
+        })
+      );
 
-    return NextResponse.json(processedFiles);
+      return NextResponse.json(processedFiles);
+    } catch (error) {
+      console.error('Error searching files:', error);
+      return NextResponse.json(
+        { error: 'Erro ao buscar arquivos. Por favor, tente novamente.' },
+        { status: 500 }
+      );
+    }
   } catch (error) {
     console.error('Search error:', error);
+    if (error instanceof Error && error.message.includes('Failed to initialize Google Drive client')) {
+      return NextResponse.json(
+        { error: 'Erro de configuração do Google Drive. Por favor, contate o administrador.' },
+        { status: 500 }
+      );
+    }
     return NextResponse.json(
-      { error: 'Failed to search files' },
+      { error: 'Erro interno do servidor. Por favor, tente novamente.' },
       { status: 500 }
     );
   }
