@@ -4,22 +4,24 @@ import { useState } from 'react';
 import { useSearch } from '@/contexts/SearchContext';
 
 export function SearchBar() {
-  const { setSearchTerm, setIsSearching } = useSearch();
+  const { setSearchTerm } = useSearch();
   const [inputValue, setInputValue] = useState('');
 
-  const handleSearch = async (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputValue.trim()) return;
-
-    setIsSearching(true);
     setSearchTerm(inputValue.trim());
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-    if (!e.target.value.trim()) {
-      setSearchTerm('');
-    }
+    const value = e.target.value;
+    setInputValue(value);
+    
+    // Atualiza o termo de busca após um pequeno delay
+    const timeoutId = setTimeout(() => {
+      setSearchTerm(value.trim());
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
   };
 
   return (

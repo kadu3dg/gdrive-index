@@ -1,8 +1,7 @@
 'use client';
 
 import { useSearch } from '@/contexts/SearchContext';
-import { useEffect } from 'react';
-import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 interface DriveFile {
   id: string;
@@ -14,34 +13,43 @@ interface DriveFile {
 }
 
 export function SearchResults() {
-  const { searchTerm, isSearching, searchResults, setSearchResults, setIsSearching } = useSearch();
+  const { searchTerm } = useSearch();
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState<DriveFile[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function performSearch() {
       if (!searchTerm) {
         setSearchResults([]);
         setIsSearching(false);
+        setError(null);
         return;
       }
 
       try {
+        setIsSearching(true);
+        setError(null);
         const response = await fetch(`/api/search?q=${encodeURIComponent(searchTerm)}`);
         const data = await response.json();
+        
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        
         setSearchResults(data);
       } catch (error) {
         console.error('Erro ao buscar:', error);
+        setError('Erro ao realizar a busca. Tente novamente.');
         setSearchResults([]);
       } finally {
         setIsSearching(false);
       }
     }
 
-    if (searchTerm) {
-      setIsSearching(true);
-      const debounceTimer = setTimeout(performSearch, 300);
-      return () => clearTimeout(debounceTimer);
-    }
-  }, [searchTerm, setSearchResults, setIsSearching]);
+    const debounceTimer = setTimeout(performSearch, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm]);
 
   const getFileIcon = (mimeType: string) => {
     if (mimeType.includes('video')) return '🎥';
@@ -68,6 +76,10 @@ export function SearchResults() {
       {isSearching ? (
         <div className="flex justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        </div>
+      ) : error ? (
+        <div className="text-center text-red-500 dark:text-red-400">
+          {error}
         </div>
       ) : searchResults.length > 0 ? (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">

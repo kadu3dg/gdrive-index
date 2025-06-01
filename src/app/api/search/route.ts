@@ -37,28 +37,43 @@ export async function GET(request: Request) {
 
     const files = response.data.files || [];
     
-    // Adiciona webContentLink para arquivos que não têm
-    const filesWithLinks = await Promise.all(
+    // Processa os arquivos para garantir que todos tenham os links necessários
+    const processedFiles = await Promise.all(
       files.map(async (file) => {
-        if (!file.webContentLink && file.mimeType !== 'application/vnd.google-apps.folder') {
-          try {
-            const fileData = await drive.files.get({
-              fileId: file.id!,
-              fields: 'webContentLink',
-              supportsAllDrives: true
-            });
-            if (fileData.data.webContentLink) {
-              return { ...file, webContentLink: fileData.data.webContentLink };
-            }
-          } catch (error) {
-            console.error(`Error getting link for file ${file.id}:`, error);
-          }
+        // Se for uma pasta, não precisa de webContentLink
+        if (file.mimeType === 'application/vnd.google-apps.folder') {
+          return file;
         }
-        return file;
+
+        // Se já tem webContentLink, retorna como está
+        if (file.webContentLink) {
+          return file;
+        }
+
+        try {
+          // Tenta obter o link de download
+          const fileData = await drive.files.get({
+            fileId: file.id!,
+            fields: 'webContentLink',
+            supportsAllDrives: true
+          });
+
+          return {
+            ...file,
+            webContentLink: fileData.data.webContentLink || `https://drive.google.com/uc?id=${file.id}&export=download`
+          };
+        } catch (error) {
+          console.error(`Error getting link for file ${file.id}:`, error);
+          // Retorna um link alternativo se não conseguir obter o webContentLink
+          return {
+            ...file,
+            webContentLink: `https://drive.google.com/uc?id=${file.id}&export=download`
+          };
+        }
       })
     );
 
-    return NextResponse.json(filesWithLinks);
+    return NextResponse.json(processedFiles);
   } catch (error) {
     console.error('Search error:', error);
     return NextResponse.json(
