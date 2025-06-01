@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { FileList } from '@/components/FileList';
+import { SearchBar } from '@/components/SearchBar';
 import { SearchResults } from '@/components/SearchResults';
 
 interface DriveFile {
@@ -69,8 +70,20 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {!currentFolder && (
+        <div className="my-8">
+          <h1 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">
+            Encontre seus arquivos
+          </h1>
+          <div className="max-w-2xl mx-auto">
+            <SearchBar />
+          </div>
+        </div>
+      )}
+      
       <SearchResults />
+
       {/* Breadcrumb navigation */}
       <nav className="flex mb-4" aria-label="Breadcrumb">
         <ol className="inline-flex items-center space-x-1 md:space-x-3">
