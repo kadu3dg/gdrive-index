@@ -51,18 +51,16 @@ const formatFileSize = (bytes?: string) => {
 };
 
 const FilePreview: React.FC<{ file: DriveFile }> = ({ file }) => {
-  if (file.mimeType.startsWith('video/') && file.webContentLink) {
+  if (file.mimeType.startsWith('video/')) {
+    const embedUrl = `https://drive.google.com/file/d/${file.id}/preview`;
     return (
       <div className="relative h-40 bg-black">
-        <video
-          className="absolute inset-0 w-full h-full object-contain"
-          src={file.webContentLink}
-          controls
-          preload="metadata"
-          poster={file.thumbnailLink}
-        >
-          Seu navegador não suporta a tag de vídeo.
-        </video>
+        <iframe
+          src={embedUrl}
+          className="absolute inset-0 w-full h-full"
+          allow="autoplay"
+          allowFullScreen
+        />
       </div>
     );
   }
@@ -112,8 +110,8 @@ export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
           className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
         >
           <div 
-            className="relative h-40 bg-gray-100 dark:bg-gray-700 cursor-pointer"
-            onClick={() => onFileClick(file)}
+            className={`relative h-40 bg-gray-100 dark:bg-gray-700 ${!file.mimeType.startsWith('video/') ? 'cursor-pointer' : ''}`}
+            onClick={() => !file.mimeType.startsWith('video/') && onFileClick(file)}
           >
             <FilePreview file={file} />
           </div>
