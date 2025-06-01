@@ -1,9 +1,10 @@
-# Google Drive Index
+# DW GDINDEX
 
 Um indexador de arquivos do Google Drive com interface moderna e responsiva, construído com Next.js 13, React e Tailwind CSS.
 
 ## 🌟 Funcionalidades
 
+- 🔍 Busca rápida de arquivos
 - 📁 Navegação intuitiva por pastas
 - 🖼️ Preview de imagens e vídeos
 - 📱 Interface responsiva
@@ -55,9 +56,10 @@ Um indexador de arquivos do Google Drive com interface moderna e responsiva, con
 
 3. Configure as variáveis de ambiente:
    - Crie um arquivo `.env.local` na raiz do projeto
-   - Adicione sua chave codificada em base64:
+   - Adicione suas variáveis:
    ```
    GOOGLE_DRIVE_CREDENTIALS=sua_chave_base64_aqui
+   ENCRYPTION_KEY=sua_chave_de_criptografia_aqui
    ```
 
 4. Execute o projeto em desenvolvimento:
