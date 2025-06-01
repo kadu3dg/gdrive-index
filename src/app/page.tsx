@@ -36,7 +36,11 @@ export default function Home() {
         }
         
         const fileList = Array.isArray(data) ? data : [];
-        setFiles(fileList);
+        // Se não estiver em uma pasta, mostrar apenas pastas
+        const filteredList = currentFolder 
+          ? fileList 
+          : fileList.filter(file => file.mimeType === 'application/vnd.google-apps.folder');
+        setFiles(filteredList);
       } catch (error) {
         console.error('Error loading files:', error);
         setError(error instanceof Error ? error.message : 'Erro ao carregar arquivos');
