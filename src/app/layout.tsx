@@ -21,9 +21,9 @@ export default function RootLayout({
     <html lang="pt-BR" className="h-full">
       <body className={`${inter.className} h-full bg-gray-50 dark:bg-gray-900`}>
         <SearchProvider>
-          <div className="min-h-full">
+          <div className="min-h-full flex flex-col">
             <Header />
-            <main className="py-10">
+            <main className="flex-grow py-10">
               <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 {children}
               </div>

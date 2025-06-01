@@ -1,14 +1,18 @@
 'use client';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { ThemeSelector } from './ThemeSelector';
 
 export function Header() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleHomeClick = () => {
-    router.push('/');
+    if (pathname !== '/') {
+      router.push('/');
+    } else {
+      router.refresh();
+    }
   };
 
   return (
@@ -17,7 +21,7 @@ export function Header() {
         <div className="flex items-center justify-between">
           <button 
             onClick={handleHomeClick}
-            className="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            className="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
           >
             DW GDINDEX
           </button>
