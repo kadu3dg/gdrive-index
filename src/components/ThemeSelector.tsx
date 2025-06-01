@@ -35,10 +35,14 @@ export function ThemeSelector() {
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
       <button
         onClick={() => handleThemeChange('light')}
-        className={`p-2 rounded-lg ${theme === 'light' ? 'bg-gray-200 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+        className={`p-2 rounded-lg transition-colors ${
+          theme === 'light' 
+            ? 'bg-white text-yellow-500 shadow-md dark:bg-gray-700 dark:text-yellow-400' 
+            : 'text-gray-600 hover:bg-white hover:text-yellow-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-yellow-400'
+        }`}
         title="Tema Claro"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -47,7 +51,11 @@ export function ThemeSelector() {
       </button>
       <button
         onClick={() => handleThemeChange('dark')}
-        className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-gray-200 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+        className={`p-2 rounded-lg transition-colors ${
+          theme === 'dark' 
+            ? 'bg-white text-blue-500 shadow-md dark:bg-gray-700 dark:text-blue-400' 
+            : 'text-gray-600 hover:bg-white hover:text-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-blue-400'
+        }`}
         title="Tema Escuro"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -56,7 +64,11 @@ export function ThemeSelector() {
       </button>
       <button
         onClick={() => handleThemeChange('system')}
-        className={`p-2 rounded-lg ${theme === 'system' ? 'bg-gray-200 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+        className={`p-2 rounded-lg transition-colors ${
+          theme === 'system' 
+            ? 'bg-white text-purple-500 shadow-md dark:bg-gray-700 dark:text-purple-400' 
+            : 'text-gray-600 hover:bg-white hover:text-purple-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-purple-400'
+        }`}
         title="Tema do Sistema"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

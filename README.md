@@ -1,61 +1,89 @@
 # Google Drive Index
 
-Um índice de arquivos do Google Drive construído com Next.js para facilitar o compartilhamento de arquivos.
+Um indexador de arquivos do Google Drive com interface moderna e responsiva, construído com Next.js 13, React e Tailwind CSS.
 
-## Funcionalidades
+## 🌟 Funcionalidades
 
-- Listagem de arquivos e pastas do Google Drive
-- Navegação entre pastas com breadcrumb
-- Preview de imagens e ícones para diferentes tipos de arquivos
-- Download direto de arquivos
-- Interface moderna e responsiva
-- Suporte a tema claro/escuro
+- 📁 Navegação intuitiva por pastas
+- 🖼️ Preview de imagens e vídeos
+- 📱 Interface responsiva
+- 🌓 Tema claro/escuro/sistema
+- ⬇️ Download direto de arquivos
+- 🎥 Player nativo do Google Drive para vídeos
+- 🔍 Breadcrumb para navegação
 
-## Configuração
+## 🚀 Tecnologias
 
-1. Clone o repositório:
-```bash
-git clone https://github.com/kadu3dg/gdrive-index.git
-cd gdrive-index
-```
+- [Next.js 13](https://nextjs.org/)
+- [React](https://reactjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Google Drive API](https://developers.google.com/drive/api)
 
-2. Instale as dependências:
-```bash
-npm install
-```
+## 📋 Pré-requisitos
 
-3. Configure as credenciais do Google Drive:
-   - Vá para o [Google Cloud Console](https://console.cloud.google.com)
-   - Crie um novo projeto ou selecione um existente
-   - Ative a API do Google Drive
-   - Crie uma conta de serviço e baixe o arquivo JSON de credenciais
-   - Converta o arquivo JSON para Base64
+- Node.js 18.0.0 ou superior
+- Conta Google com acesso à API do Google Drive
+- Projeto configurado no Google Cloud Console
 
-4. Configure as variáveis de ambiente:
-   - Crie um arquivo `.env.local` na raiz do projeto
-   - Adicione as seguintes variáveis:
-   ```env
-   GOOGLE_DRIVE_CREDENTIALS=seu_json_em_base64
+## 🛠️ Configuração do Google Cloud
+
+1. Acesse o [Google Cloud Console](https://console.cloud.google.com)
+2. Crie um novo projeto ou selecione um existente
+3. Ative a API do Google Drive para o projeto
+4. Crie uma conta de serviço:
+   - Vá para "IAM e Admin" > "Contas de serviço"
+   - Clique em "Criar conta de serviço"
+   - Dê um nome e conceda acesso de "Leitor" do Google Drive
+   - Crie e baixe a chave em formato JSON
+5. Codifique o arquivo JSON em base64:
+   ```bash
+   cat seu-arquivo-credenciais.json | base64
    ```
 
-5. Execute o projeto em desenvolvimento:
-```bash
-npm run dev
-```
+## ⚙️ Instalação
 
-6. Para produção:
-```bash
-npm run build
-npm start
-```
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/seu-usuario/gdrive-index.git
+   cd gdrive-index
+   ```
 
-## Deploy no Vercel
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
+
+3. Configure as variáveis de ambiente:
+   - Crie um arquivo `.env.local` na raiz do projeto
+   - Adicione sua chave codificada em base64:
+   ```
+   GOOGLE_DRIVE_CREDENTIALS=sua_chave_base64_aqui
+   ```
+
+4. Execute o projeto em desenvolvimento:
+   ```bash
+   npm run dev
+   ```
+
+## 🚀 Deploy
+
+O projeto está configurado para deploy automático no Vercel:
 
 1. Fork este repositório
-2. Conecte ao Vercel
-3. Configure a variável de ambiente `GOOGLE_DRIVE_CREDENTIALS` no Vercel
-4. Deploy!
+2. Crie uma conta no [Vercel](https://vercel.com)
+3. Importe o projeto do GitHub
+4. Configure a variável de ambiente `GOOGLE_DRIVE_CREDENTIALS`
+5. Deploy!
 
-## Licença
+## 📝 Licença
 
-Este projeto está licenciado sob a licença MIT. 
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 👤 Autor
+
+- [@kadu3dg](https://github.com/kadu3dg)
+- Instagram: [@kadu3dg](https://instagram.com/kadu3dg)
+
+## 🤝 Contribuindo
+
+Contribuições são sempre bem-vindas! Sinta-se à vontade para abrir uma issue ou enviar um pull request. 
