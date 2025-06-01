@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { ThemeSelector } from './ThemeSelector';
+import { AnimatedLogo } from './AnimatedLogo';
 
 export function Header() {
   const router = useRouter();
@@ -21,9 +22,9 @@ export function Header() {
         <div className="flex items-center justify-between">
           <button 
             onClick={handleHomeClick}
-            className="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
+            className="hover:opacity-80 transition-opacity cursor-pointer"
           >
-            DW GDINDEX
+            <AnimatedLogo />
           </button>
           <ThemeSelector />
         </div>

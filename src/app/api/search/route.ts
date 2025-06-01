@@ -3,16 +3,21 @@ import { NextResponse } from 'next/server';
 import { decrypt } from '@/utils/encryption';
 
 const getGoogleDriveClient = () => {
-  const credentials = JSON.parse(
-    decrypt(process.env.GOOGLE_DRIVE_CREDENTIALS || '')
-  );
+  try {
+    const credentials = JSON.parse(
+      decrypt(process.env.GOOGLE_DRIVE_CREDENTIALS || '')
+    );
 
-  const auth = new google.auth.GoogleAuth({
-    credentials,
-    scopes: ['https://www.googleapis.com/auth/drive.readonly'],
-  });
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+    });
 
-  return google.drive({ version: 'v3', auth });
+    return google.drive({ version: 'v3', auth });
+  } catch (error) {
+    console.error('Error initializing Google Drive client:', error);
+    throw new Error('Failed to initialize Google Drive client');
+  }
 };
 
 export async function GET(request: Request) {
@@ -24,11 +29,19 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Query parameter is required' }, { status: 400 });
     }
 
+    if (!process.env.GOOGLE_DRIVE_CREDENTIALS) {
+      console.error('GOOGLE_DRIVE_CREDENTIALS is not set');
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+
     const drive = getGoogleDriveClient();
     
     const response = await drive.files.list({
       q: `name contains '${query}' and trashed = false`,
-      fields: 'files(id, name, mimeType, modifiedTime, size, webContentLink, thumbnailLink)',
+      fields: 'files(id, name, mimeType, modifiedTime, size, webContentLink)',
       orderBy: 'modifiedTime desc',
       pageSize: 30,
       supportsAllDrives: true,
@@ -42,7 +55,10 @@ export async function GET(request: Request) {
       files.map(async (file) => {
         // Se for uma pasta, não precisa de webContentLink
         if (file.mimeType === 'application/vnd.google-apps.folder') {
-          return file;
+          return {
+            ...file,
+            webContentLink: null
+          };
         }
 
         // Se já tem webContentLink, retorna como está
