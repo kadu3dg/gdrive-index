@@ -11,7 +11,6 @@ interface DriveFile {
   modifiedTime?: string;
   webContentLink?: string;
   thumbnailLink?: string;
-  embedLink?: string;
 }
 
 export default function Home() {
@@ -20,7 +19,6 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [currentFolder, setCurrentFolder] = useState<string | undefined>();
   const [folderPath, setFolderPath] = useState<{id: string; name: string}[]>([]);
-  const [rootFolderId, setRootFolderId] = useState<string | undefined>();
 
   useEffect(() => {
     const loadFiles = async () => {
@@ -39,16 +37,6 @@ export default function Home() {
         
         const fileList = Array.isArray(data) ? data : [];
         setFiles(fileList);
-
-        // Se não tiver pasta atual e não tiver rootFolderId, assume que o primeiro item é a pasta raiz
-        if (!currentFolder && !rootFolderId && fileList.length > 0) {
-          const rootFolder = fileList.find(file => file.mimeType === 'application/vnd.google-apps.folder');
-          if (rootFolder) {
-            setRootFolderId(rootFolder.id);
-            setCurrentFolder(rootFolder.id);
-            setFolderPath([{ id: rootFolder.id, name: rootFolder.name }]);
-          }
-        }
       } catch (error) {
         console.error('Error loading files:', error);
         setError(error instanceof Error ? error.message : 'Erro ao carregar arquivos');
@@ -59,7 +47,7 @@ export default function Home() {
     };
 
     loadFiles();
-  }, [currentFolder, rootFolderId]);
+  }, [currentFolder]);
 
   const handleFileClick = async (file: DriveFile) => {
     if (file.mimeType === 'application/vnd.google-apps.folder' && file.id) {
@@ -71,7 +59,7 @@ export default function Home() {
   };
 
   const handleNavigateToFolder = (folderId: string | undefined, index: number) => {
-    setCurrentFolder(folderId || rootFolderId);
+    setCurrentFolder(folderId);
     setFolderPath(prev => prev.slice(0, index));
   };
 
@@ -82,7 +70,7 @@ export default function Home() {
         <ol className="inline-flex items-center space-x-1 md:space-x-3">
           <li className="inline-flex items-center">
             <button
-              onClick={() => handleNavigateToFolder(rootFolderId, 0)}
+              onClick={() => handleNavigateToFolder(undefined, 0)}
               className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
             >
               <svg className="w-3 h-3 mr-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -118,7 +106,7 @@ export default function Home() {
           {error}
         </div>
       ) : (
-        <FileList files={files} onFileClick={handleFileClick} rootFolderId={rootFolderId} />
+        <FileList files={files} onFileClick={handleFileClick} />
       )}
     </div>
   );

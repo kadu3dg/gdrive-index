@@ -1,7 +1,6 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { ThemeSelector } from '@/components/ThemeSelector'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -28,7 +27,6 @@ export default function RootLayout({
                     Google Drive Index
                   </h1>
                 </div>
-                <ThemeSelector />
               </div>
             </div>
           </nav>
