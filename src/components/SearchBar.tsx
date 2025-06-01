@@ -1,21 +1,26 @@
 'use client';
 
 import { useState } from 'react';
+import { useSearch } from '@/contexts/SearchContext';
 
 export function SearchBar() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const { setSearchTerm, setIsSearching } = useSearch();
+  const [inputValue, setInputValue] = useState('');
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Implementar a lógica de busca aqui
+    if (!inputValue.trim()) return;
+
+    setIsSearching(true);
+    setSearchTerm(inputValue.trim());
   };
 
   return (
     <form onSubmit={handleSearch} className="relative flex-1 max-w-md">
       <input
         type="text"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
         placeholder="Buscar arquivos..."
         className="w-full px-4 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 
                  border border-gray-200 dark:border-gray-700 focus:outline-none 

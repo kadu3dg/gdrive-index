@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { FileList } from '@/components/FileList';
+import { SearchResults } from '@/components/SearchResults';
 
 interface DriveFile {
   id: string;
@@ -69,6 +70,7 @@ export default function Home() {
 
   return (
     <div>
+      <SearchResults />
       {/* Breadcrumb navigation */}
       <nav className="flex mb-4" aria-label="Breadcrumb">
         <ol className="inline-flex items-center space-x-1 md:space-x-3">
