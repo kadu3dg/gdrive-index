@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 
 interface SeasonCoverProps {
   seasonNumber: number;
@@ -26,15 +25,7 @@ const SEASON_COLORS = {
   15: '#6B238E', // Décimo Quinto Doutor - Roxo
 };
 
-export const SeasonCover: React.FC<SeasonCoverProps> = ({ seasonNumber }) => {
-  const getSeasonColor = () => {
-    if (seasonNumber in SEASON_COLORS) {
-      return SEASON_COLORS[seasonNumber as keyof typeof SEASON_COLORS];
-    }
-    // Cor padrão baseada no número da temporada
-    return SEASON_COLORS[(seasonNumber % 15) + 1 as keyof typeof SEASON_COLORS];
-  };
-
+export const SeasonCover: React.FC<SeasonCoverProps> = () => {
   return (
     <div className="relative w-full h-full flex items-center justify-center">
       {/* Círculos Gallifreyanos */}
@@ -64,13 +55,6 @@ export const SeasonCover: React.FC<SeasonCoverProps> = ({ seasonNumber }) => {
               />
             ))}
           </div>
-        </div>
-      </div>
-      
-      {/* Número da Temporada */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="text-white text-6xl font-bold z-10">
-          {seasonNumber}ª
         </div>
       </div>
     </div>
