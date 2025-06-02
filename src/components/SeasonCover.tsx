@@ -25,28 +25,12 @@ const SEASON_COLORS = {
   15: '#6B238E', // Décimo Quinto Doutor - Roxo
 };
 
-const SEASON_BACKGROUNDS = {
-  1: '/covers/s1-bg.jpg',  // Fundo com Rose e 9º Doutor
-  2: '/covers/s2-bg.jpg',  // Fundo com Rose e 10º Doutor
-  3: '/covers/s3-bg.jpg',  // Fundo com Martha e 10º Doutor
-  4: '/covers/s4-bg.jpg',  // Fundo com Donna e 10º Doutor
-  5: '/covers/s5-bg.jpg',  // Fundo com Amy e 11º Doutor
-  6: '/covers/s6-bg.jpg',  // Fundo com River e 11º Doutor
-  7: '/covers/s7-bg.jpg',  // Fundo com Clara e 11º Doutor
-  8: '/covers/s8-bg.jpg',  // Fundo com Clara e 12º Doutor
-  9: '/covers/s9-bg.jpg',  // Fundo com Clara e 12º Doutor
-  10: '/covers/s10-bg.jpg', // Fundo com Bill e 12º Doutor
-  11: '/covers/s11-bg.jpg', // Fundo com 13ª Doutora
-  12: '/covers/s12-bg.jpg', // Fundo com 13ª Doutora
-  13: '/covers/s13-bg.jpg', // Fundo com 14º Doutor
-  14: '/covers/s14-bg.jpg', // Fundo com 15º Doutor
-};
-
 export function SeasonCover({ seasonNumber, doctorNumber }: SeasonCoverProps) {
   const getSeasonColor = () => {
     if (doctorNumber && doctorNumber in SEASON_COLORS) {
       return SEASON_COLORS[doctorNumber as keyof typeof SEASON_COLORS];
     }
+    // Cor padrão baseada no número da temporada
     return SEASON_COLORS[(seasonNumber % 15) + 1 as keyof typeof SEASON_COLORS];
   };
 
@@ -56,68 +40,65 @@ export function SeasonCover({ seasonNumber, doctorNumber }: SeasonCoverProps) {
       whileHover={{ scale: 1.05 }}
       transition={{ duration: 0.2 }}
     >
-      {/* Fundo com gradiente e efeito de partículas */}
+      {/* Fundo com gradiente */}
       <div
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0"
         style={{
-          backgroundImage: `linear-gradient(135deg, ${getSeasonColor()}CC, ${getSeasonColor()}), url('/backgrounds/vortex.jpg')`,
+          background: `linear-gradient(135deg, ${getSeasonColor()}CC 0%, ${getSeasonColor()} 100%)`,
         }}
       />
 
-      {/* Efeito de partículas */}
-      <div className="absolute inset-0">
-        {[...Array(20)].map((_, i) => (
+      {/* Círculos Gallifreyanos */}
+      <div className="absolute inset-0 opacity-30">
+        {[...Array(3)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-white rounded-full"
+            className="absolute border-2 border-white rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: '50%',
+              top: '50%',
+              width: `${80 - i * 20}%`,
+              height: `${80 - i * 20}%`,
+              transform: 'translate(-50%, -50%)',
             }}
             animate={{
-              scale: [0, 1, 0],
-              opacity: [0, 0.8, 0],
-              x: [0, (Math.random() - 0.5) * 50],
-              y: [0, (Math.random() - 0.5) * 50],
+              rotate: [0, 360],
             }}
             transition={{
-              duration: 2 + Math.random() * 2,
+              duration: 20 + i * 5,
               repeat: Infinity,
-              delay: Math.random() * 2,
+              ease: "linear",
             }}
           />
         ))}
       </div>
 
-      {/* Logo BBC */}
-      <div className="absolute top-4 left-4">
-        <svg width="48" height="16" viewBox="0 0 48 16" fill="white">
-          <path d="M0 0h12v16H0zM18 0h12v16H18zM36 0h12v16H36z"/>
+      {/* TARDIS silhueta */}
+      <div className="absolute bottom-4 right-4 w-12 h-16 opacity-20">
+        <svg viewBox="0 0 24 32" fill="white">
+          <path d="M2 0h20v32H2V0zm2 2v4h16V2H4zm0 6v20h16V8H4zm4 2h8v2H8v-2zm0 16h8v2H8v-2z"/>
         </svg>
       </div>
 
-      {/* Logo Doctor Who */}
-      <div className="absolute top-8 left-0 right-0 text-center">
-        <h1 className="text-white text-3xl font-bold tracking-wider" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
-          DOCTOR WHO
-        </h1>
-      </div>
-
       {/* Texto da temporada */}
-      <div className="absolute bottom-8 left-0 right-0 text-center text-white">
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-2xl font-bold"
-          style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
+          className="text-2xl font-bold mb-2"
         >
-          {seasonNumber}ª Temporada Completa
+          {seasonNumber}ª
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-xl"
+        >
+          Temporada
         </motion.div>
       </div>
-
-      {/* Overlay com gradiente para dar profundidade */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
     </motion.div>
   );
 } 
