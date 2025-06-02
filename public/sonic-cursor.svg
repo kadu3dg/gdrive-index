@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Corpo da Sonic Screwdriver -->
-  <path d="M14 8L18 8L19 24L13 24L14 8Z" fill="#22D3EE"/>
+  <!-- Corpo principal -->
+  <path d="M15 8L17 8L17 24L15 24L15 8Z" fill="#E5E7EB"/>
   
-  <!-- Ponta luminosa -->
-  <circle cx="16" cy="6" r="4" fill="#06B6D4">
+  <!-- Detalhes metálicos -->
+  <path d="M14 12H18M14 16H18M14 20H18" stroke="#9CA3AF" strokeWidth="0.5"/>
+  
+  <!-- Ponta azul -->
+  <path d="M14 4H18L16.5 8H15.5L14 4Z" fill="#22D3EE">
     <animate
       attributeName="opacity"
-      values="0.5;1;0.5"
+      values="0.7;1;0.7"
+      dur="1s"
+      repeatCount="indefinite"
+    />
+  </path>
+  
+  <!-- Brilho da ponta -->
+  <circle cx="16" cy="5" r="3" fill="#06B6D4" opacity="0.3">
+    <animate
+      attributeName="r"
+      values="2;3;2"
       dur="1s"
       repeatCount="indefinite"
     />
   </circle>
   
-  <!-- Brilho da ponta -->
-  <circle cx="16" cy="6" r="6" fill="#06B6D4" opacity="0.3">
-    <animate
-      attributeName="r"
-      values="4;6;4"
-      dur="1s"
-      repeatCount="indefinite"
-    />
-  </circle>
+  <!-- Base preta -->
+  <path d="M15 24L14 28H18L17 24H15Z" fill="#1F2937"/>
 </svg> 
