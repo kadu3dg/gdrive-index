@@ -90,12 +90,12 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
 
   if (isSeasonFolder && seasonNumber) {
     return (
-      <div className="relative w-full h-full bg-gray-800">
+      <div className="relative w-full h-full">
         <FolderCover folderId={file.id} />
         <div className="absolute inset-0">
           <SeasonCover 
             seasonNumber={seasonNumber} 
-            doctorNumber={0} // Removendo a associação com doutores específicos
+            doctorNumber={0}
           />
         </div>
       </div>
@@ -104,10 +104,10 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
 
   if (isFolder) {
     return (
-      <div className="relative w-full h-full bg-gray-800">
+      <div className="relative w-full h-full">
         <FolderCover folderId={file.id} />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-          <div className="text-xl font-bold mb-2 text-center px-4">{file.name}</div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <div className="text-xl font-bold mb-2 text-center px-4 text-white">{file.name}</div>
         </div>
       </div>
     );
