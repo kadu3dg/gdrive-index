@@ -1,10 +1,11 @@
 'use client';
 
+import React from 'react';
 import { motion } from 'framer-motion';
 
 interface SeasonCoverProps {
   seasonNumber: number;
-  doctorNumber?: number;
+  doctorNumber: number;
 }
 
 const SEASON_COLORS = {
@@ -25,80 +26,53 @@ const SEASON_COLORS = {
   15: '#6B238E', // Décimo Quinto Doutor - Roxo
 };
 
-export function SeasonCover({ seasonNumber, doctorNumber }: SeasonCoverProps) {
+export const SeasonCover: React.FC<SeasonCoverProps> = ({ seasonNumber }) => {
   const getSeasonColor = () => {
-    if (doctorNumber && doctorNumber in SEASON_COLORS) {
-      return SEASON_COLORS[doctorNumber as keyof typeof SEASON_COLORS];
+    if (seasonNumber in SEASON_COLORS) {
+      return SEASON_COLORS[seasonNumber as keyof typeof SEASON_COLORS];
     }
     // Cor padrão baseada no número da temporada
     return SEASON_COLORS[(seasonNumber % 15) + 1 as keyof typeof SEASON_COLORS];
   };
 
   return (
-    <motion.div
-      className="relative w-full h-full rounded-lg overflow-hidden"
-      whileHover={{ scale: 1.05 }}
-      transition={{ duration: 0.2 }}
-    >
-      {/* Fundo com gradiente */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: `linear-gradient(135deg, ${getSeasonColor()}CC 0%, ${getSeasonColor()} 100%)`,
-        }}
-      />
-
+    <div className="relative w-full h-full flex items-center justify-center">
       {/* Círculos Gallifreyanos */}
-      <div className="absolute inset-0 opacity-30">
-        {[...Array(3)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute border-2 border-white rounded-full"
-            style={{
-              left: '50%',
-              top: '50%',
-              width: `${80 - i * 20}%`,
-              height: `${80 - i * 20}%`,
-              transform: 'translate(-50%, -50%)',
-            }}
-            animate={{
-              rotate: [0, 360],
-            }}
-            transition={{
-              duration: 20 + i * 5,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-        ))}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative w-64 h-64">
+          {/* Círculo externo */}
+          <div className="absolute inset-0 border-2 border-white rounded-full animate-spin-slow" />
+          
+          {/* Círculo médio */}
+          <div className="absolute inset-4 border-2 border-white rounded-full animate-spin-reverse" />
+          
+          {/* Círculo interno */}
+          <div className="absolute inset-8 border-2 border-white rounded-full animate-spin-slow" />
+          
+          {/* Símbolos Gallifreyanos (pontos) */}
+          <div className="absolute inset-0">
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-2 h-2 bg-white rounded-full"
+                style={{
+                  left: '50%',
+                  top: '50%',
+                  transform: `rotate(${i * 30}deg) translateY(-32px)`,
+                  transformOrigin: '0 32px',
+                }}
+              />
+            ))}
+          </div>
+        </div>
       </div>
-
-      {/* TARDIS silhueta */}
-      <div className="absolute bottom-4 right-4 w-12 h-16 opacity-20">
-        <svg viewBox="0 0 24 32" fill="white">
-          <path d="M2 0h20v32H2V0zm2 2v4h16V2H4zm0 6v20h16V8H4zm4 2h8v2H8v-2zm0 16h8v2H8v-2z"/>
-        </svg>
-      </div>
-
-      {/* Texto da temporada */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-2xl font-bold mb-2"
-        >
+      
+      {/* Número da Temporada */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="text-white text-6xl font-bold z-10">
           {seasonNumber}ª
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="text-xl"
-        >
-          Temporada
-        </motion.div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
-} 
+}; 
