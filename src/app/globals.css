@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 255, 255, 255;
+  --theme-primary: #003B6F;
+  --theme-secondary: #00204A;
+  --theme-accent: #FFD700;
+  --theme-background: #001B3F;
+  --theme-text: #FFFFFF;
+  --theme-border: #004B8D;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -15,6 +19,97 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
+  background-color: var(--theme-background);
+  color: var(--theme-text);
+}
+
+/* Tema TARDIS */
+.theme-tardis {
+  --theme-primary: #003B6F;
+  --theme-secondary: #00204A;
+  --theme-accent: #FFD700;
+  --theme-background: #001B3F;
+  --theme-text: #FFFFFF;
+  --theme-border: #004B8D;
+}
+
+/* Tema Gallifrey */
+.theme-gallifrey {
+  --theme-primary: #8B0000;
+  --theme-secondary: #4A0404;
+  --theme-accent: #FFD700;
+  --theme-background: #2B0000;
+  --theme-text: #FFFFFF;
+  --theme-border: #CC0000;
+}
+
+/* Tema Classic */
+.theme-classic {
+  --theme-primary: #4A4A4A;
+  --theme-secondary: #2B2B2B;
+  --theme-accent: #FFFFFF;
+  --theme-background: #000000;
+  --theme-text: #FFFFFF;
+  --theme-border: #666666;
+}
+
+/* Tema New Who */
+.theme-newWho {
+  --theme-primary: #1E90FF;
+  --theme-secondary: #0066CC;
+  --theme-accent: #FFD700;
+  --theme-background: #000033;
+  --theme-text: #FFFFFF;
+  --theme-border: #4169E1;
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px var(--theme-accent);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--theme-accent);
+  }
+  100% {
+    box-shadow: 0 0 5px var(--theme-accent);
+  }
+}
+
+/* Classes utilitárias */
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.hover-glow:hover {
+  animation: glow 2s infinite;
+}
+
+/* Estilização de scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--theme-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--theme-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-accent);
 } 
