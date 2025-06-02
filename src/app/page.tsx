@@ -21,8 +21,8 @@ export default function Home() {
   const [files, setFiles] = useState<DriveFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
-  const [breadcrumb, setBreadcrumb] = useState<{ id: string; name: string }[]>([]);
+  const [currentFolder, setCurrentFolder] = useState<string | undefined>();
+  const [folderPath, setFolderPath] = useState<{id: string; name: string}[]>([]);
   const { navigateToFolder: navigateWithEffects, changePage } = useFileSystem();
   const { activeSpecialDate, isSpecialDay } = useSpecialDates();
 
@@ -31,8 +31,8 @@ export default function Home() {
       try {
         setLoading(true);
         setError(null);
-        const url = currentFolderId
-          ? `/api/files?folderId=${currentFolderId}`
+        const url = currentFolder
+          ? `/api/files?folderId=${currentFolder}`
           : '/api/files';
         const response = await fetch(url);
         const data = await response.json();
@@ -43,7 +43,7 @@ export default function Home() {
         
         const fileList = Array.isArray(data) ? data : [];
         // Se não estiver em uma pasta, mostrar apenas pastas
-        const filteredList = currentFolderId 
+        const filteredList = currentFolder 
           ? fileList 
           : fileList.filter(file => file.mimeType === 'application/vnd.google-apps.folder');
         setFiles(filteredList);
@@ -57,21 +57,24 @@ export default function Home() {
     };
 
     loadFiles();
-  }, [currentFolderId]);
+  }, [currentFolder]);
 
-  const handleFileClick = (file: DriveFile) => {
-    if (file.mimeType === 'application/vnd.google-apps.folder') {
-      setCurrentFolderId(file.id);
-      setBreadcrumb([...breadcrumb, { id: file.id, name: file.name }]);
+  const handleFileClick = async (file: DriveFile) => {
+    if (file.mimeType === 'application/vnd.google-apps.folder' && file.id) {
+      await navigateWithEffects(file.id);
+      setCurrentFolder(file.id);
+      setFolderPath(prev => [...prev, { id: file.id, name: file.name }]);
     } else if (file.webContentLink) {
       window.open(file.webContentLink, '_blank');
     }
   };
 
-  const handleBreadcrumbClick = (index: number) => {
-    const newBreadcrumb = breadcrumb.slice(0, index + 1);
-    setBreadcrumb(newBreadcrumb);
-    setCurrentFolderId(index === -1 ? null : newBreadcrumb[newBreadcrumb.length - 1].id);
+  const handleNavigateToFolder = async (folderId: string | undefined, index: number) => {
+    if (index === folderPath.length) return;
+    
+    await changePage(folderId || '/');
+    setCurrentFolder(folderId);
+    setFolderPath(prev => prev.slice(0, index));
   };
 
   // Renderizar banner de data especial
@@ -111,24 +114,35 @@ export default function Home() {
       {renderSpecialBanner()}
       
       {/* Breadcrumb navigation */}
-      <nav className="flex items-center space-x-2 mb-4 text-sm">
-        <button
-          onClick={() => handleBreadcrumbClick(-1)}
-          className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
-        >
-          Início
-        </button>
-        {breadcrumb.map((item, index) => (
-          <div key={item.id} className="flex items-center">
-            <span className="mx-2 text-gray-500 dark:text-gray-400">/</span>
+      <nav className="flex mb-4" aria-label="Breadcrumb">
+        <ol className="inline-flex items-center space-x-1 md:space-x-3">
+          <li className="inline-flex items-center">
             <button
-              onClick={() => handleBreadcrumbClick(index)}
-              className="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+              onClick={() => handleNavigateToFolder(undefined, 0)}
+              className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
             >
-              {item.name}
+              <svg className="w-3 h-3 mr-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+              </svg>
+              Início
             </button>
-          </div>
-        ))}
+          </li>
+          {folderPath.map((folder, index) => (
+            <li key={folder.id}>
+              <div className="flex items-center">
+                <svg className="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
+                </svg>
+                <button
+                  onClick={() => handleNavigateToFolder(folder.id, index + 1)}
+                  className="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white"
+                >
+                  {folder.name}
+                </button>
+              </div>
+            </li>
+          ))}
+        </ol>
       </nav>
 
       {loading ? (
@@ -138,11 +152,7 @@ export default function Home() {
       ) : error ? (
         <GallifreyanError message={error} />
       ) : (
-        <FileList
-          folderId={currentFolderId}
-          files={files}
-          onFileClick={handleFileClick}
-        />
+        <FileList files={files} onFileClick={handleFileClick} />
       )}
     </div>
   );

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { FilePreview } from './FilePreview';
 import { SonicEffect } from './SonicEffect';
-import { useFileCache } from '../hooks/useFileCache';
 
 interface DriveFile {
   id: string;
@@ -15,7 +14,7 @@ interface DriveFile {
 }
 
 interface FileListProps {
-  folderId: string | null;
+  files: DriveFile[];
   onFileClick: (file: DriveFile) => void;
 }
 
@@ -53,28 +52,11 @@ const formatFileSize = (bytes?: string) => {
   return `${(size / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 };
 
-export const FileList: React.FC<FileListProps> = ({ folderId, onFileClick }) => {
+export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [hoveredFile, setHoveredFile] = useState<string | null>(null);
-  const { files, isLoading, isError } = useFileCache(folderId);
 
-  if (isError) {
-    return (
-      <div className="text-center text-red-500 dark:text-red-400 p-4">
-        Erro ao carregar os arquivos. Por favor, tente novamente.
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
-
-  if (!files || files.length === 0) {
+  if (!Array.isArray(files) || files.length === 0) {
     return (
       <div className="text-center text-gray-500 dark:text-gray-400">
         Nenhum arquivo encontrado
@@ -179,7 +161,7 @@ export const FileList: React.FC<FileListProps> = ({ folderId, onFileClick }) => 
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <img
-                        src={file.mimeType === 'application/vnd.google-apps.folder' ? '/folder.svg' : '/file.svg'}
+                        src={getFileIcon(file.mimeType)}
                         alt=""
                         className="h-5 w-5 mr-3"
                       />
