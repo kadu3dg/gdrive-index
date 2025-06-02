@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { FilePreview } from './FilePreview';
+import { SonicEffect } from './SonicEffect';
 
 interface DriveFile {
   id: string;
@@ -53,6 +54,7 @@ const formatFileSize = (bytes?: string) => {
 
 export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [hoveredFile, setHoveredFile] = useState<string | null>(null);
 
   if (!Array.isArray(files) || files.length === 0) {
     return (
@@ -144,8 +146,10 @@ export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
               {sortedFiles.map((file) => (
                 <tr
                   key={file.id}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer relative"
                   onClick={() => onFileClick(file)}
+                  onMouseEnter={() => setHoveredFile(file.id)}
+                  onMouseLeave={() => setHoveredFile(null)}
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
@@ -178,6 +182,7 @@ export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
                       </a>
                     )}
                   </td>
+                  <SonicEffect isActive={hoveredFile === file.id} />
                 </tr>
               ))}
             </tbody>
@@ -194,13 +199,16 @@ export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
         {sortedFiles.map((file) => (
           <div
             key={file.id}
-            className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+            className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative"
+            onMouseEnter={() => setHoveredFile(file.id)}
+            onMouseLeave={() => setHoveredFile(null)}
           >
             <div 
               className={`relative h-40 bg-gray-100 dark:bg-gray-700 ${!file.mimeType.startsWith('video/') ? 'cursor-pointer' : ''}`}
               onClick={() => !file.mimeType.startsWith('video/') && onFileClick(file)}
             >
               <FilePreview file={file} />
+              <SonicEffect isActive={hoveredFile === file.id} />
             </div>
             
             <div className="p-4">
