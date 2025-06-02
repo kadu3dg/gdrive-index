@@ -1,32 +1,86 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { animations } from '@/config/themes';
+import { useTheme } from '@/contexts/ThemeContext';
 
-export function LoadingVortex() {
+interface LoadingVortexProps {
+  size?: 'sm' | 'md' | 'lg';
+}
+
+export function LoadingVortex({ size = 'md' }: LoadingVortexProps) {
+  const { themeColors } = useTheme();
+  
+  const sizes = {
+    sm: 'w-8 h-8',
+    md: 'w-16 h-16',
+    lg: 'w-24 h-24'
+  };
+
+  const vortexVariants = {
+    animate: {
+      rotate: 360,
+      scale: [1, 1.2, 1],
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  const spiralVariants = {
+    animate: {
+      rotate: -360,
+      scale: [1, 0.8, 1],
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <style jsx global>{`
-        ${animations.tardisVortex}
-      `}</style>
+    <div className={`relative ${sizes[size]}`}>
       <motion.div
-        className="w-32 h-32 rounded-full border-4 border-blue-500 border-t-transparent"
+        className="absolute inset-0"
+        style={{
+          border: `4px solid ${themeColors.accent}`,
+          borderRadius: '50%',
+          borderTopColor: 'transparent',
+          borderBottomColor: 'transparent'
+        }}
+        variants={vortexVariants}
+        animate="animate"
+      />
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          border: `4px solid ${themeColors.primary}`,
+          borderRadius: '50%',
+          borderLeftColor: 'transparent',
+          borderRightColor: 'transparent'
+        }}
+        variants={spiralVariants}
+        animate="animate"
+      />
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          backgroundColor: 'transparent',
+          backgroundImage: `radial-gradient(circle, ${themeColors.secondary} 0%, transparent 70%)`,
+          opacity: 0.3
+        }}
         animate={{
-          rotate: 360,
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.6, 0.3]
         }}
         transition={{
-          duration: 1.5,
+          duration: 2,
           repeat: Infinity,
-          ease: "linear"
+          ease: "easeInOut"
         }}
-      >
-        <div className="w-full h-full rounded-full border-4 border-yellow-400 border-t-transparent animate-[tardisVortex_3s_linear_infinite]">
-          <div className="w-full h-full rounded-full border-4 border-white border-t-transparent animate-[tardisVortex_2s_linear_infinite_reverse]" />
-        </div>
-      </motion.div>
-      <div className="absolute text-white text-xl font-bold mt-40">
-        Viajando pelo vortex temporal...
-      </div>
+      />
     </div>
   );
 } 
