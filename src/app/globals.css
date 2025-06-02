@@ -3,13 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --primary-color: #1B75BC;
+  --primary-color: #0066CC;
   --secondary-color: #003B6F;
   --accent-color: #00A0E3;
-  --background-color: #001F3F;
+  --background-color: #001830;
   --text-color: #FFFFFF;
   --textSecondary-color: #B8E3FF;
-  --border-color: #2196F3;
+  --border-color: #0088FF;
+  --cardBg-color: #002347;
+  --folderBg-color: #004080;
+  --folderText-color: #FFFFFF;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -42,44 +45,18 @@ body {
   border-color: var(--border-color);
 }
 
-/* Tema TARDIS */
-.theme-tardis {
-  --theme-primary: #003B6F;
-  --theme-secondary: #00204A;
-  --theme-accent: #FFD700;
-  --theme-background: #001B3F;
-  --theme-text: #FFFFFF;
-  --theme-border: #004B8D;
+/* Estilo das pastas */
+.folder-item {
+  background-color: var(--folderBg-color);
+  color: var(--folderText-color);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
 }
 
-/* Tema Gallifrey */
-.theme-gallifrey {
-  --theme-primary: #8B0000;
-  --theme-secondary: #4A0404;
-  --theme-accent: #FFD700;
-  --theme-background: #2B0000;
-  --theme-text: #FFFFFF;
-  --theme-border: #CC0000;
-}
-
-/* Tema Classic */
-.theme-classic {
-  --theme-primary: #4A4A4A;
-  --theme-secondary: #2B2B2B;
-  --theme-accent: #FFFFFF;
-  --theme-background: #000000;
-  --theme-text: #FFFFFF;
-  --theme-border: #666666;
-}
-
-/* Tema New Who */
-.theme-newWho {
-  --theme-primary: #1E90FF;
-  --theme-secondary: #0066CC;
-  --theme-accent: #FFD700;
-  --theme-background: #000033;
-  --theme-text: #FFFFFF;
-  --theme-border: #4169E1;
+.folder-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-color: var(--accent-color);
 }
 
 /* Scrollbar personalizada */
@@ -200,7 +177,7 @@ button:focus {
 
 /* Estilos para cards */
 .card {
-  background: var(--secondary-color);
+  background: var(--cardBg-color);
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   padding: 1rem;
@@ -227,14 +204,54 @@ button:focus {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--theme-secondary);
+  background: var(--secondary-color);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--theme-primary);
+  background: var(--primary-color);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--theme-accent);
+  background: var(--accent-color);
+}
+
+/* Tema TARDIS */
+.theme-tardis {
+  --theme-primary: #003B6F;
+  --theme-secondary: #00204A;
+  --theme-accent: #FFD700;
+  --theme-background: #001B3F;
+  --theme-text: #FFFFFF;
+  --theme-border: #004B8D;
+}
+
+/* Tema Gallifrey */
+.theme-gallifrey {
+  --theme-primary: #8B0000;
+  --theme-secondary: #4A0404;
+  --theme-accent: #FFD700;
+  --theme-background: #2B0000;
+  --theme-text: #FFFFFF;
+  --theme-border: #CC0000;
+}
+
+/* Tema Classic */
+.theme-classic {
+  --theme-primary: #4A4A4A;
+  --theme-secondary: #2B2B2B;
+  --theme-accent: #FFFFFF;
+  --theme-background: #000000;
+  --theme-text: #FFFFFF;
+  --theme-border: #666666;
+}
+
+/* Tema New Who */
+.theme-newWho {
+  --theme-primary: #1E90FF;
+  --theme-secondary: #0066CC;
+  --theme-accent: #FFD700;
+  --theme-background: #000033;
+  --theme-text: #FFFFFF;
+  --theme-border: #4169E1;
 } 

@@ -12,44 +12,59 @@ interface ThemeColors {
   text: string;
   textSecondary: string;
   border: string;
+  cardBg: string;
+  folderBg: string;
+  folderText: string;
 }
 
 const themeColorSchemes: Record<Theme, ThemeColors> = {
   tardis: {
-    primary: '#1B75BC',
+    primary: '#0066CC',
     secondary: '#003B6F',
     accent: '#00A0E3',
-    background: '#001F3F',
+    background: '#001830',
     text: '#FFFFFF',
     textSecondary: '#B8E3FF',
-    border: '#2196F3'
+    border: '#0088FF',
+    cardBg: '#002347',
+    folderBg: '#004080',
+    folderText: '#FFFFFF'
   },
   gallifrey: {
-    primary: '#FF4500',
-    secondary: '#8B0000',
-    accent: '#FFD700',
+    primary: '#CC0000',
+    secondary: '#800000',
+    accent: '#FF4500',
     background: '#1A0000',
     text: '#FFFFFF',
     textSecondary: '#FFB6B6',
-    border: '#FF6B6B'
+    border: '#FF2200',
+    cardBg: '#2D0000',
+    folderBg: '#B30000',
+    folderText: '#FFFFFF'
   },
   classic: {
-    primary: '#A0A0A0',
-    secondary: '#4A4A4A',
-    accent: '#E0E0E0',
-    background: '#1A1A1A',
+    primary: '#404040',
+    secondary: '#202020',
+    accent: '#808080',
+    background: '#101010',
     text: '#FFFFFF',
     textSecondary: '#CCCCCC',
-    border: '#808080'
+    border: '#606060',
+    cardBg: '#282828',
+    folderBg: '#505050',
+    folderText: '#FFFFFF'
   },
   newWho: {
-    primary: '#F1C40F',
-    secondary: '#D35400',
-    accent: '#E74C3C',
-    background: '#2C3E50',
+    primary: '#003366',
+    secondary: '#001F3F',
+    accent: '#0088FF',
+    background: '#000C1A',
     text: '#FFFFFF',
-    textSecondary: '#ECF0F1',
-    border: '#E67E22'
+    textSecondary: '#99CCFF',
+    border: '#004C99',
+    cardBg: '#001529',
+    folderBg: '#004080',
+    folderText: '#FFFFFF'
   }
 };
 
