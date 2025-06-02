@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Base da TARDIS -->
+  <rect x="156" y="100" width="200" height="312" fill="#003B6F"/>
+  
+  <!-- Janelas -->
+  <rect x="176" y="120" width="40" height="40" fill="#FFFFFF"/>
+  <rect x="236" y="120" width="40" height="40" fill="#FFFFFF"/>
+  <rect x="296" y="120" width="40" height="40" fill="#FFFFFF"/>
+  
+  <!-- Placa "POLICE BOX" -->
+  <rect x="166" y="80" width="180" height="20" fill="#FFFFFF"/>
+  
+  <!-- Luz do topo -->
+  <circle cx="256" cy="60" r="10" fill="#FFFFFF"/>
+  <circle cx="256" cy="60" r="15" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+  
+  <!-- Detalhes -->
+  <rect x="156" y="200" width="200" height="2" fill="#FFFFFF"/>
+  <rect x="156" y="300" width="200" height="2" fill="#FFFFFF"/>
+  <rect x="256" y="100" width="2" height="312" fill="#FFFFFF"/>
+</svg> 

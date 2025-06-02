@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 interface TardisLogoProps {
   isVisible: boolean;
@@ -28,9 +29,11 @@ export function TardisLogo({ isVisible }: TardisLogoProps) {
           transition={{ duration: 1.5, times: [0, 0.2, 0.5, 0.8, 1] }}
         >
           <div className="relative w-32 h-32 md:w-48 md:h-48">
-            <img
-              src="/tardis-logo.png"
+            <Image
+              src="/tardis-logo.svg"
               alt="TARDIS"
+              width={192}
+              height={192}
               className="w-full h-full object-contain"
             />
             <motion.div

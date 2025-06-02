@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { FileList } from '@/components/FileList';
+import { useFileSystem } from '@/hooks/useFileSystem';
 
 interface DriveFile {
   id: string;
@@ -19,6 +20,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [currentFolder, setCurrentFolder] = useState<string | undefined>();
   const [folderPath, setFolderPath] = useState<{id: string; name: string}[]>([]);
+  const { navigateToFolder: navigateWithEffects, changePage } = useFileSystem();
 
   useEffect(() => {
     const loadFiles = async () => {
@@ -55,6 +57,7 @@ export default function Home() {
 
   const handleFileClick = async (file: DriveFile) => {
     if (file.mimeType === 'application/vnd.google-apps.folder' && file.id) {
+      await navigateWithEffects(file.id);
       setCurrentFolder(file.id);
       setFolderPath(prev => [...prev, { id: file.id, name: file.name }]);
     } else if (file.webContentLink) {
@@ -62,7 +65,10 @@ export default function Home() {
     }
   };
 
-  const handleNavigateToFolder = (folderId: string | undefined, index: number) => {
+  const handleNavigateToFolder = async (folderId: string | undefined, index: number) => {
+    if (index === folderPath.length) return;
+    
+    await changePage(folderId || '/');
     setCurrentFolder(folderId);
     setFolderPath(prev => prev.slice(0, index));
   };
