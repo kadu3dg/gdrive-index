@@ -89,6 +89,20 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
     );
   }
 
+  if (isVideo) {
+    const embedUrl = `https://drive.google.com/file/d/${file.id}/preview`;
+    return (
+      <div className="relative w-full h-full bg-black">
+        <iframe
+          src={embedUrl}
+          allow="autoplay"
+          allowFullScreen
+          className="absolute inset-0 w-full h-full"
+        />
+      </div>
+    );
+  }
+
   if (isImage && file.thumbnailLink) {
     return (
       <Image
@@ -97,20 +111,6 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
         fill
         className="object-cover"
       />
-    );
-  }
-
-  if (isVideo) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-800">
-        <Image
-          src="/video.svg"
-          alt={file.name}
-          width={64}
-          height={64}
-          className="w-16 h-16"
-        />
-      </div>
     );
   }
 
