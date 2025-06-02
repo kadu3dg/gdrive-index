@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react'
-import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Header } from '@/components/Header'
 import { TardisSound } from '@/components/TardisSound'
@@ -13,11 +12,6 @@ import { RegenerationTransition } from '@/components/RegenerationTransition'
 import { useDoctorWho } from '@/contexts/DoctorWhoContext'
 
 const inter = Inter({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: 'DW GDINDEX',
-  description: 'Um índice de arquivos do Google Drive',
-}
 
 function EffectsWrapper({ children }: { children: React.ReactNode }) {
   const { isLoading, isRegenerating, showTardis } = useDoctorWho();
@@ -43,6 +37,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className="h-full">
+      <head>
+        <title>DW GDINDEX</title>
+        <meta name="description" content="Um índice de arquivos do Google Drive" />
+      </head>
       <body className={`${inter.className} h-full bg-gray-50 dark:bg-gray-900`}>
         <DoctorWhoProvider>
           <EffectsWrapper>
