@@ -10,36 +10,46 @@ interface ThemeColors {
   accent: string;
   background: string;
   text: string;
+  textSecondary: string;
+  border: string;
 }
 
 const themeColorSchemes: Record<Theme, ThemeColors> = {
   tardis: {
-    primary: '#003B6F',
-    secondary: '#1B75BC',
+    primary: '#1B75BC',
+    secondary: '#003B6F',
     accent: '#00A0E3',
     background: '#001F3F',
-    text: '#FFFFFF'
+    text: '#FFFFFF',
+    textSecondary: '#B8E3FF',
+    border: '#2196F3'
   },
   gallifrey: {
-    primary: '#8B0000',
-    secondary: '#FF4500',
+    primary: '#FF4500',
+    secondary: '#8B0000',
     accent: '#FFD700',
-    background: '#2B0000',
-    text: '#FFFFFF'
+    background: '#1A0000',
+    text: '#FFFFFF',
+    textSecondary: '#FFB6B6',
+    border: '#FF6B6B'
   },
   classic: {
-    primary: '#4A4A4A',
-    secondary: '#808080',
-    accent: '#C0C0C0',
+    primary: '#A0A0A0',
+    secondary: '#4A4A4A',
+    accent: '#E0E0E0',
     background: '#1A1A1A',
-    text: '#FFFFFF'
+    text: '#FFFFFF',
+    textSecondary: '#CCCCCC',
+    border: '#808080'
   },
   newWho: {
-    primary: '#9B2C2C',
+    primary: '#F1C40F',
     secondary: '#D35400',
-    accent: '#F1C40F',
+    accent: '#E74C3C',
     background: '#2C3E50',
-    text: '#FFFFFF'
+    text: '#FFFFFF',
+    textSecondary: '#ECF0F1',
+    border: '#E67E22'
   }
 };
 
@@ -63,11 +73,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     localStorage.setItem('dwTheme', currentTheme);
-    document.documentElement.style.setProperty('--primary-color', themeColorSchemes[currentTheme].primary);
-    document.documentElement.style.setProperty('--secondary-color', themeColorSchemes[currentTheme].secondary);
-    document.documentElement.style.setProperty('--accent-color', themeColorSchemes[currentTheme].accent);
-    document.documentElement.style.setProperty('--background-color', themeColorSchemes[currentTheme].background);
-    document.documentElement.style.setProperty('--text-color', themeColorSchemes[currentTheme].text);
+    const colors = themeColorSchemes[currentTheme];
+    
+    // Aplicar cores ao :root
+    Object.entries(colors).forEach(([key, value]) => {
+      document.documentElement.style.setProperty(`--${key}-color`, value);
+    });
+
+    // Aplicar classe ao body para estilos específicos do tema
+    document.body.className = `theme-${currentTheme}`;
   }, [currentTheme]);
 
   const toggleTheme = () => {
@@ -96,4 +110,37 @@ export function useTheme() {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
-} 
+}
+
+export const companions = [
+  {
+    id: 'rose',
+    name: 'Rose Tyler',
+    era: 'New Who',
+    image: '/companions/rose.png'
+  },
+  {
+    id: 'donna',
+    name: 'Donna Noble',
+    era: 'New Who',
+    image: '/companions/donna.png'
+  },
+  {
+    id: 'amy',
+    name: 'Amy Pond',
+    era: 'New Who',
+    image: '/companions/amy.png'
+  },
+  {
+    id: 'sarah-jane',
+    name: 'Sarah Jane Smith',
+    era: 'Classic',
+    image: '/companions/sarah-jane.png'
+  },
+  {
+    id: 'jack',
+    name: 'Captain Jack Harkness',
+    era: 'New Who',
+    image: '/companions/jack.png'
+  }
+]; 

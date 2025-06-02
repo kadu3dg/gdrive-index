@@ -6,22 +6,36 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { AnimatedLogo } from './AnimatedLogo';
 
 export function Header() {
-  const { currentTheme, toggleTheme } = useTheme();
+  const { currentTheme, themeColors, toggleTheme } = useTheme();
+
+  const buttonVariants = {
+    hover: {
+      scale: 1.05,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    },
+    tap: {
+      scale: 0.95
+    }
+  };
 
   return (
-    <header className="bg-gray-800 shadow-lg">
+    <header className="sticky top-0 z-50 bg-secondary border-b border-theme transition-theme">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-4">
+          <Link href="/" className="flex items-center space-x-4 hover:opacity-80 transition-opacity">
             <AnimatedLogo />
           </Link>
 
           <div className="flex items-center space-x-4">
             <Link href="/favorites">
               <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2"
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+                className="px-4 py-2 rounded-lg bg-primary hover:bg-opacity-90 text-text flex items-center space-x-2 shadow-lg"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -35,16 +49,21 @@ export function Header() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>Memórias</span>
+                <span className="font-medium">Memórias</span>
               </motion.button>
             </Link>
 
             <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white"
-              title="Mudar tema"
+              className="p-3 rounded-lg bg-primary hover:bg-opacity-90 text-text shadow-lg"
+              title={`Tema atual: ${currentTheme}`}
+              style={{
+                backgroundColor: themeColors.primary,
+                color: themeColors.text
+              }}
             >
               {currentTheme === 'tardis' && (
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
