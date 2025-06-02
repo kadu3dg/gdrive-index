@@ -39,13 +39,17 @@ const FolderCover: React.FC<FolderCoverProps> = ({ folderId }) => {
   if (!coverUrl) return null;
 
   return (
-    <div 
-      className="absolute inset-0 bg-cover bg-center rounded-lg"
-      style={{ 
-        backgroundImage: `url(${coverUrl})`,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo escuro para pastas sem capa
-      }}
-    />
+    <div className="absolute inset-0 flex items-center justify-center p-4">
+      <div 
+        className="w-full h-full rounded-lg"
+        style={{ 
+          backgroundImage: `url(${coverUrl})`,
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
+    </div>
   );
 };
 
@@ -84,32 +88,14 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
   const isSeasonFolder = isFolder && seasonMatch;
   const seasonNumber = isSeasonFolder ? parseInt(seasonMatch[1]) : null;
 
-  // Mapeamento de temporadas para Doutores
-  const seasonToDoctor: { [key: number]: number } = {
-    1: 9,  // 9º Doutor
-    2: 10, // 10º Doutor
-    3: 10,
-    4: 10,
-    5: 11, // 11º Doutor
-    6: 11,
-    7: 11,
-    8: 12, // 12º Doutor
-    9: 12,
-    10: 13, // 13ª Doutora
-    11: 13,
-    12: 13,
-    13: 14, // 14º Doutor
-    14: 15, // 15º Doutor
-  };
-
   if (isSeasonFolder && seasonNumber) {
     return (
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full bg-gray-800">
         <FolderCover folderId={file.id} />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50">
+        <div className="absolute inset-0">
           <SeasonCover 
             seasonNumber={seasonNumber} 
-            doctorNumber={seasonToDoctor[seasonNumber]}
+            doctorNumber={0} // Removendo a associação com doutores específicos
           />
         </div>
       </div>
@@ -118,10 +104,10 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
 
   if (isFolder) {
     return (
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full bg-gray-800">
         <FolderCover folderId={file.id} />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-          <div className="text-2xl font-bold mb-2">{file.name}</div>
+          <div className="text-xl font-bold mb-2 text-center px-4">{file.name}</div>
         </div>
       </div>
     );
