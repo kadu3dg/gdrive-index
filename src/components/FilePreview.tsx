@@ -39,16 +39,13 @@ const FolderCover: React.FC<FolderCoverProps> = ({ folderId }) => {
   if (!coverUrl) return null;
 
   return (
-    <div className="absolute inset-0">
-      <Image
-        src={coverUrl}
-        alt="Capa da pasta"
-        fill
-        className="object-cover rounded-lg"
-      />
-      {/* Overlay gradiente para melhorar legibilidade */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg" />
-    </div>
+    <div 
+      className="absolute inset-0 bg-cover bg-center rounded-lg"
+      style={{ 
+        backgroundImage: `url(${coverUrl})`,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo escuro para pastas sem capa
+      }}
+    />
   );
 };
 
@@ -109,10 +106,12 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
     return (
       <div className="relative w-full h-full">
         <FolderCover folderId={file.id} />
-        <SeasonCover 
-          seasonNumber={seasonNumber} 
-          doctorNumber={seasonToDoctor[seasonNumber]}
-        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50">
+          <SeasonCover 
+            seasonNumber={seasonNumber} 
+            doctorNumber={seasonToDoctor[seasonNumber]}
+          />
+        </div>
       </div>
     );
   }
@@ -121,14 +120,8 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
     return (
       <div className="relative w-full h-full">
         <FolderCover folderId={file.id} />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Image
-            src="/folder.svg"
-            alt={file.name}
-            width={64}
-            height={64}
-            className="w-16 h-16 z-10"
-          />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+          <div className="text-2xl font-bold mb-2">{file.name}</div>
         </div>
       </div>
     );
