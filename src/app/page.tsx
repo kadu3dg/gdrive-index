@@ -3,6 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { FileList } from '@/components/FileList';
 import { useFileSystem } from '@/hooks/useFileSystem';
+import { GallifreyanError } from '@/components/GallifreyanError';
+import { useSpecialDates } from '@/hooks/useSpecialDates';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface DriveFile {
   id: string;
@@ -21,6 +24,7 @@ export default function Home() {
   const [currentFolder, setCurrentFolder] = useState<string | undefined>();
   const [folderPath, setFolderPath] = useState<{id: string; name: string}[]>([]);
   const { navigateToFolder: navigateWithEffects, changePage } = useFileSystem();
+  const { activeSpecialDate, isSpecialDay } = useSpecialDates();
 
   useEffect(() => {
     const loadFiles = async () => {
@@ -73,8 +77,42 @@ export default function Home() {
     setFolderPath(prev => prev.slice(0, index));
   };
 
+  // Renderizar banner de data especial
+  const renderSpecialBanner = () => {
+    if (!activeSpecialDate) return null;
+
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: 'auto', opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          className="bg-blue-600 text-white p-4 mb-4 rounded-lg shadow-lg overflow-hidden"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-xl font-bold">{activeSpecialDate.title}</h3>
+              <p className="text-blue-100">{activeSpecialDate.description}</p>
+            </div>
+            {activeSpecialDate.type === 'anniversary' && (
+              <div className="text-4xl">🎂</div>
+            )}
+            {activeSpecialDate.type === 'regeneration' && (
+              <div className="text-4xl">✨</div>
+            )}
+            {activeSpecialDate.type === 'special' && (
+              <div className="text-4xl">🎉</div>
+            )}
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {renderSpecialBanner()}
+      
       {/* Breadcrumb navigation */}
       <nav className="flex mb-4" aria-label="Breadcrumb">
         <ol className="inline-flex items-center space-x-1 md:space-x-3">
@@ -112,9 +150,7 @@ export default function Home() {
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900 dark:border-white"></div>
         </div>
       ) : error ? (
-        <div className="text-center text-red-600 dark:text-red-400">
-          {error}
-        </div>
+        <GallifreyanError message={error} />
       ) : (
         <FileList files={files} onFileClick={handleFileClick} />
       )}
