@@ -60,11 +60,11 @@ export default function Home() {
   }, [currentFolder]);
 
   const handleFileClick = async (file: DriveFile) => {
-    if (file.mimeType === 'application/vnd.google-apps.folder' && file.id) {
-      const cleanId = file.id.replace(/:\d+$/, '');
-      await navigateWithEffects(cleanId);
-      setCurrentFolder(cleanId);
-      setFolderPath(prev => [...prev, { id: cleanId, name: file.name }]);
+    if (file.mimeType === 'application/vnd.google-apps.folder') {
+      const slug = generateSlug(file.name);
+      await navigateWithEffects(slug);
+      setCurrentFolder(slug);
+      setFolderPath(prev => [...prev, { id: slug, name: file.name }]);
     } else if (file.webContentLink) {
       window.open(file.webContentLink, '_blank');
     }
@@ -109,6 +109,11 @@ export default function Home() {
         </motion.div>
       </AnimatePresence>
     );
+  };
+
+  // Adicionar função para gerar slug a partir do nome do arquivo
+  const generateSlug = (name: string) => {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   };
 
   return (

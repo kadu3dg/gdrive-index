@@ -52,6 +52,11 @@ const formatFileSize = (bytes?: string) => {
   return `${(size / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 };
 
+// Adicionar função para gerar slug a partir do nome do arquivo
+const generateSlug = (name: string) => {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+};
+
 export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [hoveredFile, setHoveredFile] = useState<string | null>(null);
@@ -152,10 +157,10 @@ export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               {sortedFiles.map((file) => (
                 <tr
-                  key={file.id}
+                  key={generateSlug(file.name)}
                   className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer relative"
                   onClick={() => onFileClick(file)}
-                  onMouseEnter={() => setHoveredFile(file.id)}
+                  onMouseEnter={() => setHoveredFile(generateSlug(file.name))}
                   onMouseLeave={() => setHoveredFile(null)}
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -189,7 +194,7 @@ export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
                       </a>
                     )}
                   </td>
-                  <SonicEffect isActive={hoveredFile === file.id} />
+                  <SonicEffect isActive={hoveredFile === generateSlug(file.name)} />
                 </tr>
               ))}
             </tbody>
@@ -205,9 +210,9 @@ export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
         {sortedFiles.map((file) => (
           <div
-            key={file.id}
+            key={generateSlug(file.name)}
             className="flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative"
-            onMouseEnter={() => setHoveredFile(file.id)}
+            onMouseEnter={() => setHoveredFile(generateSlug(file.name))}
             onMouseLeave={() => setHoveredFile(null)}
           >
             <div 
@@ -215,7 +220,7 @@ export const FileList: React.FC<FileListProps> = ({ files, onFileClick }) => {
               onClick={() => !file.mimeType.startsWith('video/') && onFileClick(file)}
             >
               <FilePreview file={file} />
-              <SonicEffect isActive={hoveredFile === file.id} />
+              <SonicEffect isActive={hoveredFile === generateSlug(file.name)} />
             </div>
             
             <div className="p-4">

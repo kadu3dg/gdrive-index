@@ -78,6 +78,11 @@ const getFileIcon = (mimeType: string) => {
   return '/file.svg';
 };
 
+// Adicionar função para gerar slug a partir do nome do arquivo
+const generateSlug = (name: string) => {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+};
+
 export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
   const isFolder = file.mimeType === 'application/vnd.google-apps.folder';
   const isImage = file.mimeType.startsWith('image/');
@@ -91,7 +96,7 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
   if (isSeasonFolder && seasonNumber) {
     return (
       <div className="relative w-full h-full">
-        <FolderCover folderId={file.id.replace(/:\d+$/, '')} />
+        <FolderCover folderId={generateSlug(file.name)} />
         <div className="absolute inset-0">
           <SeasonCover 
             seasonNumber={seasonNumber} 
@@ -105,7 +110,7 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
   if (isFolder) {
     return (
       <div className="relative w-full h-full">
-        <FolderCover folderId={file.id.replace(/:\d+$/, '')} />
+        <FolderCover folderId={generateSlug(file.name)} />
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <div className="text-xl font-bold mb-2 text-center px-4 text-white">{file.name}</div>
         </div>
@@ -114,7 +119,7 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
   }
 
   if (isVideo) {
-    const embedUrl = `https://drive.google.com/file/d/${file.id.replace(/:\d+$/, '')}/preview`;
+    const embedUrl = `/api/download/${generateSlug(file.name)}`;
     return (
       <div className="relative w-full h-full bg-black">
         <iframe
