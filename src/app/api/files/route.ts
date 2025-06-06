@@ -10,7 +10,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    const folderId = undefined; // ou usar um parâmetro fixo ou de rota dinâmica
+    const { searchParams } = new URL(request.url);
+    const folderId = searchParams.get('folderId');
 
     const driveService = new GoogleDriveService();
     const files = await driveService.listFiles(folderId || undefined);

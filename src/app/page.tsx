@@ -32,7 +32,7 @@ export default function Home() {
         setLoading(true);
         setError(null);
         const url = currentFolder
-          ? `/api/files/${currentFolder}`
+          ? `/api/files?folderId=${currentFolder}`
           : '/api/files';
         const response = await fetch(url);
         const data = await response.json();
@@ -60,11 +60,10 @@ export default function Home() {
   }, [currentFolder]);
 
   const handleFileClick = async (file: DriveFile) => {
-    if (file.mimeType === 'application/vnd.google-apps.folder') {
-      const slug = generateSlug(file.name);
-      await navigateWithEffects(slug);
-      setCurrentFolder(slug);
-      setFolderPath(prev => [...prev, { id: slug, name: file.name }]);
+    if (file.mimeType === 'application/vnd.google-apps.folder' && file.id) {
+      await navigateWithEffects(file.id);
+      setCurrentFolder(file.id);
+      setFolderPath(prev => [...prev, { id: file.id, name: file.name }]);
     } else if (file.webContentLink) {
       window.open(file.webContentLink, '_blank');
     }
@@ -73,9 +72,8 @@ export default function Home() {
   const handleNavigateToFolder = async (folderId: string | undefined, index: number) => {
     if (index === folderPath.length) return;
     
-    const cleanId = folderId ? folderId.replace(/:\d+$/, '') : undefined;
-    await changePage(cleanId || '/');
-    setCurrentFolder(cleanId);
+    await changePage(folderId || '/');
+    setCurrentFolder(folderId);
     setFolderPath(prev => prev.slice(0, index));
   };
 
@@ -109,11 +107,6 @@ export default function Home() {
         </motion.div>
       </AnimatePresence>
     );
-  };
-
-  // Adicionar função para gerar slug a partir do nome do arquivo
-  const generateSlug = (name: string) => {
-    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   };
 
   return (

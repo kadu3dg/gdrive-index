@@ -14,13 +14,13 @@ export async function GET(
 
   try {
     const driveService = new GoogleDriveService();
-    const files = await driveService.listFiles(params.fileId);
+    const file = await driveService.getFileById(params.fileId);
 
-    return NextResponse.json(Array.isArray(files) ? files : []);
+    return NextResponse.json(file);
   } catch (error) {
-    console.error('Error listing files:', error);
+    console.error('Error getting file:', error);
     return NextResponse.json(
-      { error: 'Failed to list files' },
+      { error: 'Failed to get file' },
       { status: 500 }
     );
   }
