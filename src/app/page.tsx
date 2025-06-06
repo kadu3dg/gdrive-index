@@ -32,7 +32,7 @@ export default function Home() {
         setLoading(true);
         setError(null);
         const url = currentFolder
-          ? `/api/files?folderId=${currentFolder}`
+          ? `/api/files/${currentFolder}`
           : '/api/files';
         const response = await fetch(url);
         const data = await response.json();

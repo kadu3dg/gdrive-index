@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleDriveService } from '@/lib/googleDrive';
 
-export async function GET(request: Request) {
+export async function GET(request: Request, { params }: { params: { folderId: string } }) {
   if (!process.env.GOOGLE_DRIVE_CREDENTIALS) {
     return NextResponse.json(
       { error: 'Google Drive credentials not configured' },
@@ -10,10 +10,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    const folderId = undefined; // ou usar um parâmetro fixo ou de rota dinâmica
-
     const driveService = new GoogleDriveService();
-    const files = await driveService.listFiles(folderId || undefined);
+    const files = await driveService.listFiles(params.folderId);
 
     return NextResponse.json(Array.isArray(files) ? files : []);
   } catch (error) {
