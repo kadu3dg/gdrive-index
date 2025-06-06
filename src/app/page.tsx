@@ -61,9 +61,10 @@ export default function Home() {
 
   const handleFileClick = async (file: DriveFile) => {
     if (file.mimeType === 'application/vnd.google-apps.folder' && file.id) {
-      await navigateWithEffects(file.id);
-      setCurrentFolder(file.id);
-      setFolderPath(prev => [...prev, { id: file.id, name: file.name }]);
+      const cleanId = file.id.replace(/:\d+$/, '');
+      await navigateWithEffects(cleanId);
+      setCurrentFolder(cleanId);
+      setFolderPath(prev => [...prev, { id: cleanId, name: file.name }]);
     } else if (file.webContentLink) {
       window.open(file.webContentLink, '_blank');
     }
@@ -72,8 +73,9 @@ export default function Home() {
   const handleNavigateToFolder = async (folderId: string | undefined, index: number) => {
     if (index === folderPath.length) return;
     
-    await changePage(folderId || '/');
-    setCurrentFolder(folderId);
+    const cleanId = folderId ? folderId.replace(/:\d+$/, '') : undefined;
+    await changePage(cleanId || '/');
+    setCurrentFolder(cleanId);
     setFolderPath(prev => prev.slice(0, index));
   };
 

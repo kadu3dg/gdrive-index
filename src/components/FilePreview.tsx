@@ -91,7 +91,7 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
   if (isSeasonFolder && seasonNumber) {
     return (
       <div className="relative w-full h-full">
-        <FolderCover folderId={file.id} />
+        <FolderCover folderId={file.id.replace(/:\d+$/, '')} />
         <div className="absolute inset-0">
           <SeasonCover 
             seasonNumber={seasonNumber} 
@@ -105,7 +105,7 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
   if (isFolder) {
     return (
       <div className="relative w-full h-full">
-        <FolderCover folderId={file.id} />
+        <FolderCover folderId={file.id.replace(/:\d+$/, '')} />
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <div className="text-xl font-bold mb-2 text-center px-4 text-white">{file.name}</div>
         </div>
@@ -114,7 +114,7 @@ export const FilePreview: React.FC<{ file: File }> = ({ file }) => {
   }
 
   if (isVideo) {
-    const embedUrl = `https://drive.google.com/file/d/${file.id}/preview`;
+    const embedUrl = `https://drive.google.com/file/d/${file.id.replace(/:\d+$/, '')}/preview`;
     return (
       <div className="relative w-full h-full bg-black">
         <iframe
